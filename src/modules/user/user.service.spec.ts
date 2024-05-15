@@ -16,6 +16,10 @@ describe('UserService', () => {
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
+  afterEach(async () => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(userService).toBeDefined();
   });
@@ -34,7 +38,7 @@ describe('UserService', () => {
         password: 'password',
       };
       jest
-        .spyOn(prismaService.users, 'findUnique')
+        .spyOn(prismaService.users, 'findFirst')
         .mockResolvedValue(user as any);
 
       const result = await userService.user({ id: id });
@@ -44,7 +48,7 @@ describe('UserService', () => {
 
     it('should return null if not found', async () => {
       const id = 2;
-      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prismaService.users, 'findFirst').mockResolvedValue(null);
 
       const result = await userService.user({ id: id });
 
