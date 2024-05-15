@@ -4,6 +4,7 @@ import { RegisterDTO } from '../../../modules/auth/dto/register-dto';
 import { AuthService } from '../../../modules/auth/auth.service';
 import { UserModule } from '../../../modules/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
+import { UnprocessableEntityException } from '@nestjs/common';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -33,7 +34,7 @@ describe('AuthController', () => {
   it('should register', async () => {
     const registerDTO = {
       name: 'User',
-      email: 'user@example.com',
+      email: 'user@mail.com',
       password: 'password',
     } as RegisterDTO;
 
@@ -47,5 +48,48 @@ describe('AuthController', () => {
       },
     });
     expect(registerSpy).toHaveBeenCalledWith(registerDTO);
+  });
+
+  it('should return access token for valid login credentials', async () => {
+    // Mock userService.user to return a user
+    // Mock bcrypt.compare to return true
+    // Mock jwtService.sign to return a token
+
+    const loginData = {
+      email: 'test@example.com',
+      password: 'password',
+    };
+
+    const result = await service.login(loginData);
+
+    expect(result).toHaveProperty('data');
+    expect(result.data).toHaveProperty('access_token');
+  });
+
+  it('should throw UnprocessableEntityException for invalid email', async () => {
+    // Mock userService.user to return null
+
+    const loginData = {
+      email: 'invalid@example.com',
+      password: 'password',
+    };
+
+    await expect(service.login(loginData)).rejects.toThrow(
+      UnprocessableEntityException,
+    );
+  });
+
+  it('should throw UnprocessableEntityException for incorrect password', async () => {
+    // Mock userService.user to return a user
+    // Mock bcrypt.compare to return false
+
+    const loginData = {
+      email: 'test@example.com',
+      password: 'incorrectpassword',
+    };
+
+    await expect(service.login(loginData)).rejects.toThrow(
+      UnprocessableEntityException,
+    );
   });
 });

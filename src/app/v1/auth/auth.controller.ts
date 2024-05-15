@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from '../../../modules/auth/auth.service';
-// import { LoginDTO } from '../../../modules/auth/dto/login-dto';
+import { LoginDTO } from '../../../modules/auth/dto/login-dto';
 import { RegisterDTO } from '../../../modules/auth/dto/register-dto';
 
 @Controller({
@@ -16,8 +16,9 @@ export class AuthController {
     return this.authService.register(registerDTO);
   }
 
-  // @Post('login')
-  // login(@Body() loginDTO: LoginDTO) {
-  //   //const user = await this.authService.
-  // }
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  login(@Body() loginDTO: LoginDTO): Promise<any> {
+    return this.authService.login(loginDTO);
+  }
 }
