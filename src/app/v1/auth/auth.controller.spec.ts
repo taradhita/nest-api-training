@@ -42,10 +42,9 @@ describe('AuthController', () => {
     const result = await controller.register(registerDTO);
 
     expect(result).toEqual({
-      id: expect.any(Number),
-      name: 'User',
-      email: 'user@example.com',
-      password: expect.any(String),
+      data: {
+        id: expect.any(Number),
+      },
     });
     expect(registerSpy).toHaveBeenCalledWith(registerDTO);
   });
