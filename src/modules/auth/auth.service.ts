@@ -11,13 +11,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(userCreateInput: Prisma.usersCreateInput): Promise<any> {
+  async register(userCreateInput: Prisma.UsersCreateInput): Promise<any> {
     const hashedPassword: string = await bcrypt.hash(
       userCreateInput.password,
       10,
     );
 
-    const userData: Prisma.usersCreateInput = {
+    const userData: Prisma.UsersCreateInput = {
       ...userCreateInput,
       password: hashedPassword,
     };

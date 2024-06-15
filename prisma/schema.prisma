@@ -8,9 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
+model Users {
   id       Int    @id @default(autoincrement())
   name     String @db.VarChar
   email    String @db.VarChar @unique
   password String @db.VarChar
+
+  @@map("users")
 }
