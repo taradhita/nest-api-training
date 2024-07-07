@@ -6,4 +6,7 @@ export default registerAs('app', () => ({
     host: process.env.HTTP_HOST || 'localhost',
     port: +process.env.HTTP_PORT || 3000,
   },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+  },
 }));
