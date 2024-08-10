@@ -4,9 +4,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import databaseConfig from './config/database.config';
 import appConfig from './config/app.config';
 import { UserModule } from './modules/user/user.module';
-import { PrismaModule } from './providers/database/prisma/prisma.module';
 import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
+import { ProviderModule } from './providers/provider.module';
 
 @Module({
   imports: [
@@ -16,7 +15,7 @@ import * as winston from 'winston';
     }),
     AuthModule,
     UserModule,
-    PrismaModule,
+    ProviderModule,
     WinstonModule.forRoot({
       // options
     }),
