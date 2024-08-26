@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    env_file: 
+      - .env
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - nest-api-training
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - ${DATABASE_PORT}:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB}
+    networks:
+      - nest-api-training
+
+networks:
+  nest-api-training:
+    driver: bridge
