@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryService } from './category.service';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CreateCategoryDto } from './dto/create-category.dto';
 import { PrismaService } from '../../providers/database/prisma/prisma.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -31,7 +30,9 @@ describe('CategoryService', () => {
         .mockResolvedValue(createdCategory);
 
       const result = await service.create(createCategoryDto);
-      expect(result).toEqual(createdCategory);
+      expect(result).toEqual({
+        data: createdCategory,
+      });
       expect(prisma.categories.create).toHaveBeenCalledWith({
         data: createCategoryDto,
       });
@@ -39,14 +40,31 @@ describe('CategoryService', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of categories', async () => {
+    it('should return object containing an array of categories', async () => {
       const categories = [{ id: 1, name: 'Test Category' }];
+      const paginationDto: PaginationDto = {
+        page: 1,
+        limit: 10,
+      } as PaginationDto;
+
+      const expected = {
+        data: categories,
+        meta: {
+          current_page: 1,
+          last_page: 1,
+          per_page: 10,
+          total: 1,
+        },
+      };
+
+      jest.spyOn(prisma.categories, 'count').mockResolvedValue(1);
+
       jest
         .spyOn(prisma.categories, 'findMany')
         .mockResolvedValue(categories as any);
 
-      const result = await service.findAll();
-      expect(result).toEqual(categories);
+      const result = await service.findAll(paginationDto);
+      expect(result).toEqual(expected);
       expect(prisma.categories.findMany).toHaveBeenCalled();
     });
   });
@@ -54,12 +72,15 @@ describe('CategoryService', () => {
   describe('findOne', () => {
     it('should return a category by ID', async () => {
       const category = { id: 1, name: 'Test Category' };
+
       jest
         .spyOn(prisma.categories, 'findFirst')
         .mockResolvedValue(category as any);
 
       const result = await service.findOne(1);
-      expect(result).toEqual(category);
+      expect(result).toEqual({
+        data: category,
+      });
       expect(prisma.categories.findFirst).toHaveBeenCalledWith({
         where: { id: 1 },
       });
