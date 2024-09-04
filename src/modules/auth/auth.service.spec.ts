@@ -12,6 +12,8 @@ describe('AuthService', () => {
   let jwtService: JwtService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -49,7 +51,7 @@ describe('AuthService', () => {
         name: 'User',
         email: 'test@example.com',
         password: 'password',
-      } as Prisma.usersCreateInput;
+      } as Prisma.UsersCreateInput;
       const createSpy = jest.spyOn(userService, 'createUser');
 
       await authService.register(userData);
@@ -75,10 +77,20 @@ describe('AuthService', () => {
         password: 'password',
       };
 
-      const fetchUserSpy = jest.spyOn(userService, 'user');
+      const fetchUserSpy = jest.spyOn(userService, 'user').mockResolvedValue({
+        id: 1,
+        name: 'User',
+        email: 'test@example.com',
+        password: 'hashedPassword', // Ensure this matches the mocked hash
+      });
+
       jest
         .spyOn(bcrypt, 'compare')
-        .mockImplementation(() => Promise.resolve(true));
+        .mockImplementation((password, hashedPassword) =>
+          Promise.resolve(
+            password === 'password' && hashedPassword === 'hashedPassword',
+          ),
+        );
 
       jest.spyOn(jwtService, 'sign').mockReturnValue('accessToken');
 
@@ -89,7 +101,7 @@ describe('AuthService', () => {
       });
       expect(result).toEqual({
         data: {
-          access_token: expect.any(String),
+          access_token: 'accessToken',
         },
       });
     });

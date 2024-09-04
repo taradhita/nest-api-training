@@ -8,12 +8,17 @@ describe('CategoryService', () => {
   let prisma: PrismaService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [CategoryService, PrismaService],
     }).compile();
 
     service = module.get<CategoryService>(CategoryService);
     prisma = module.get<PrismaService>(PrismaService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -98,7 +103,9 @@ describe('CategoryService', () => {
 
       const result = await service.update(1, updateCategoryDto);
       expect(updateSpy).toHaveBeenCalled();
-      expect(result).toEqual(updatedCategory);
+      expect(result).toEqual({
+        data: updatedCategory,
+      });
       expect(updateSpy).toHaveBeenCalledWith({
         where: { id: 1 },
         data: updateCategoryDto,

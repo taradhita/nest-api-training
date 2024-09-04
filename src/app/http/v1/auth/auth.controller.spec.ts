@@ -5,15 +5,56 @@ import { AuthService } from '../../../../modules/auth/auth.service';
 import { UserModule } from '../../../../modules/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UnprocessableEntityException } from '@nestjs/common';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let service: AuthService;
+  let logger: Logger;
+
+  const mockAuthService = {
+    register: jest.fn().mockResolvedValue({
+      data: {
+        id: 1,
+      },
+    }),
+    login: jest.fn().mockImplementation(async (loginData) => {
+      if (loginData.email === 'invalid@example.com') {
+        throw new UnprocessableEntityException('Invalid email');
+      }
+      if (loginData.password === 'incorrectpassword') {
+        throw new UnprocessableEntityException('Incorrect password');
+      }
+      return {
+        data: {
+          access_token: 'token',
+        },
+      };
+    }),
+  };
 
   beforeEach(async () => {
+    const mockLogger = {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+      verbose: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [AuthService],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
+        },
+        {
+          provide: WINSTON_MODULE_PROVIDER, // Inject the Winston logger
+          useValue: mockLogger, // Use the mock logger
+        },
+      ],
       imports: [
         UserModule,
         JwtModule.register({
@@ -25,6 +66,7 @@ describe('AuthController', () => {
 
     controller = module.get<AuthController>(AuthController);
     service = module.get<AuthService>(AuthService);
+    logger = module.get<Logger>(WINSTON_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {
@@ -34,7 +76,7 @@ describe('AuthController', () => {
   it('should register', async () => {
     const registerDTO = {
       name: 'User',
-      email: 'user@mail.com',
+      email: 'user@gmail.com',
       password: 'password',
     } as RegisterDTO;
 
@@ -48,6 +90,7 @@ describe('AuthController', () => {
       },
     });
     expect(registerSpy).toHaveBeenCalledWith(registerDTO);
+    expect(logger.info).toHaveBeenCalledWith(registerDTO);
   });
 
   it('should return access token for valid login credentials', async () => {
@@ -67,8 +110,6 @@ describe('AuthController', () => {
   });
 
   it('should throw UnprocessableEntityException for invalid email', async () => {
-    // Mock userService.user to return null
-
     const loginData = {
       email: 'invalid@example.com',
       password: 'password',
@@ -80,9 +121,6 @@ describe('AuthController', () => {
   });
 
   it('should throw UnprocessableEntityException for incorrect password', async () => {
-    // Mock userService.user to return a user
-    // Mock bcrypt.compare to return false
-
     const loginData = {
       email: 'test@example.com',
       password: 'incorrectpassword',
@@ -91,5 +129,9 @@ describe('AuthController', () => {
     await expect(service.login(loginData)).rejects.toThrow(
       UnprocessableEntityException,
     );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });
