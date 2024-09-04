@@ -1,20 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PrismaService } from '../../providers/database/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
 import { Categories } from '@prisma/client';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
 import { PAGINATION_DEFAULTS } from '../../common/constants';
 
 @Injectable()
 export class CategoryService {
-  constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
   async create(createCategoryDto: CreateCategoryDto) {
     const category = await this.prisma.categories.create({
       data: createCategoryDto,
@@ -36,8 +31,6 @@ export class CategoryService {
       skip: skip,
       take: limit,
     });
-
-    this.logger.info(data);
 
     return {
       data,

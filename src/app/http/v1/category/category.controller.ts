@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { CategoryService } from '../../../../modules/category/category.service';
 import { CreateCategoryDto } from '../../../../modules/category/dto/create-category.dto';
@@ -36,16 +37,24 @@ export class CategoryController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const category = await this.categoryService.findOne(+id);
+    if (!category.data) {
+      throw new NotFoundException('Category not found');
+    }
+    return category;
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
+    const category = await this.categoryService.findOne(+id);
+    if (!category.data) {
+      throw new NotFoundException('Category not found');
+    }
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
