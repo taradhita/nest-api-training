@@ -35,9 +35,7 @@ describe('CategoryService', () => {
         .mockResolvedValue(createdCategory);
 
       const result = await service.create(createCategoryDto);
-      expect(result).toEqual({
-        data: createdCategory,
-      });
+      expect(result).toEqual(createdCategory);
       expect(prisma.categories.create).toHaveBeenCalledWith({
         data: createCategoryDto,
       });
@@ -83,9 +81,7 @@ describe('CategoryService', () => {
         .mockResolvedValue(category as any);
 
       const result = await service.findOne(1);
-      expect(result).toEqual({
-        data: category,
-      });
+      expect(result).toEqual(category);
       expect(prisma.categories.findFirst).toHaveBeenCalledWith({
         where: { id: 1 },
       });
@@ -103,9 +99,7 @@ describe('CategoryService', () => {
 
       const result = await service.update(1, updateCategoryDto);
       expect(updateSpy).toHaveBeenCalled();
-      expect(result).toEqual({
-        data: updatedCategory,
-      });
+      expect(result).toEqual(updatedCategory);
       expect(updateSpy).toHaveBeenCalledWith({
         where: { id: 1 },
         data: updateCategoryDto,

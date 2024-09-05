@@ -15,9 +15,7 @@ export class CategoryService {
       data: createCategoryDto,
     });
 
-    return {
-      data: category,
-    };
+    return category;
   }
 
   async findAll(
@@ -46,9 +44,7 @@ export class CategoryService {
   async findOne(id: number) {
     const category = await this.prisma.categories.findFirst({ where: { id } });
 
-    return {
-      data: category,
-    };
+    return category;
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
@@ -57,9 +53,7 @@ export class CategoryService {
       data: updateCategoryDto,
     });
 
-    return {
-      data: category,
-    };
+    return category;
   }
 
   remove(id: number) {
