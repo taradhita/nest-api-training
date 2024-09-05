@@ -7,6 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PaginatedResult } from '../interfaces/paginated-result.interface';
+import { PaginationResult } from 'prisma-paginate';
 
 @Injectable()
 export class PaginateInterceptor<T>
@@ -15,14 +16,17 @@ export class PaginateInterceptor<T>
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {
-        // Check if the response contains meta field for pagination
-        if (data && data.meta) {
+        if (data instanceof PaginationResult) {
           return {
-            data: data.data,
-            meta: data.meta,
+            data: data.result,
+            meta: {
+              current_page: data.page,
+              last_page: data.totalPages,
+              per_page: data.limit,
+              total: data.count,
+            },
           };
         }
-        return data;
       }),
     );
   }
