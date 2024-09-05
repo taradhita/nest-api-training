@@ -10,11 +10,14 @@ import {
   HttpStatus,
   Query,
   NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from '../../../../modules/category/category.service';
 import { CreateCategoryDto } from '../../../../modules/category/dto/create-category.dto';
 import { UpdateCategoryDto } from '../../../../modules/category/dto/update-category.dto';
 import { PaginationDto } from '../../../../common/dto/pagination.dto';
+import { TransformInterceptor } from '../../../../common/interceptors/transform.interceptor';
+import { PaginateInterceptor } from '../../../../common/interceptors/paginate.interceptor';
 
 @Controller({
   path: 'categories',
@@ -25,21 +28,24 @@ export class CategoryController {
 
   @Post()
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(TransformInterceptor)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(PaginateInterceptor)
   findAll(@Query() paginationDto?: PaginationDto) {
     return this.categoryService.findAll(paginationDto);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(TransformInterceptor)
   async findOne(@Param('id') id: string) {
     const category = await this.categoryService.findOne(+id);
-    if (!category.data) {
+    if (!category) {
       throw new NotFoundException('Category not found');
     }
     return category;
@@ -47,12 +53,13 @@ export class CategoryController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(TransformInterceptor)
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     const category = await this.categoryService.findOne(+id);
-    if (!category.data) {
+    if (!category) {
       throw new NotFoundException('Category not found');
     }
     return this.categoryService.update(+id, updateCategoryDto);

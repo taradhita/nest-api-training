@@ -68,9 +68,7 @@ describe('CategoryController', () => {
         .mockResolvedValue(createdCategory);
 
       const result = await controller.create(createCategoryDto);
-      expect(result).toEqual({
-        data: createdCategory,
-      });
+      expect(result).toEqual(createdCategory);
       expect(prisma.categories.create).toHaveBeenCalled();
     });
   });
@@ -82,9 +80,7 @@ describe('CategoryController', () => {
 
       jest.spyOn(prisma.categories, 'findFirst').mockResolvedValue(category);
       const result = await controller.findOne(id.toString());
-      expect(result).toEqual({
-        data: category,
-      });
+      expect(result).toEqual(category);
       expect(prisma.categories.findFirst).toHaveBeenCalled();
     });
 
@@ -101,20 +97,6 @@ describe('CategoryController', () => {
   });
 
   describe('update', () => {
-    // it('should update a category', async () => {
-    //   const id: number = 1;
-    //   const updateCategoryDto = { name: 'Updated Category' };
-    //   const updatedCategory = { id: 1, ...updateCategoryDto };
-    //   jest
-    //     .spyOn(prisma.categories, 'update')
-    //     .mockResolvedValue(updatedCategory);
-
-    //   const result = await controller.update(id.toString(), updateCategoryDto);
-    //   expect(result).toEqual({
-    //     data: updatedCategory,
-    //   });
-    //   expect(prisma.categories.update).toHaveBeenCalled();
-    // });
     it('should update a category', async () => {
       const id: number = 1;
       const updateCategoryDto = { name: 'Updated Category' };
@@ -122,22 +104,16 @@ describe('CategoryController', () => {
       const updatedCategory = { id: 1, ...updateCategoryDto };
 
       // Mock findOne to return an existing category
-      jest
-        .spyOn(service, 'findOne')
-        .mockResolvedValue({ data: existingCategory });
+      jest.spyOn(service, 'findOne').mockResolvedValue(existingCategory);
 
       // Mock update to return the updated category
-      jest
-        .spyOn(service, 'update')
-        .mockResolvedValue({ data: updatedCategory });
+      jest.spyOn(service, 'update').mockResolvedValue(updatedCategory);
 
       // Call the controller method
       const result = await controller.update(id.toString(), updateCategoryDto);
 
       // Verify the result and that methods were called
-      expect(result).toEqual({
-        data: updatedCategory,
-      });
+      expect(result).toEqual(updatedCategory);
       expect(service.findOne).toHaveBeenCalledWith(id);
       expect(service.update).toHaveBeenCalledWith(id, updateCategoryDto);
     });
@@ -147,7 +123,7 @@ describe('CategoryController', () => {
       const updateCategoryDto = { name: 'Updated Category' };
 
       // Mock findOne to return null
-      jest.spyOn(service, 'findOne').mockResolvedValue({ data: null });
+      jest.spyOn(service, 'findOne').mockResolvedValue(null);
 
       // Mock update to throw NotFoundException
       jest
