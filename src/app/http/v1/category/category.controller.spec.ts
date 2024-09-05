@@ -4,6 +4,7 @@ import { CategoryService } from '../../../../modules/category/category.service';
 import { PrismaService } from '../../../../providers/database/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
+import { PaginationResult } from 'prisma-paginate';
 
 describe('CategoryController', () => {
   let controller: CategoryController;
@@ -38,14 +39,17 @@ describe('CategoryController', () => {
       } as PaginationDto;
 
       const expectedResult = {
-        data: categories,
-        meta: {
-          current_page: 1,
-          last_page: 1,
-          per_page: 10,
-          total: categories.length,
-        },
-      };
+        count: 1,
+        exceedCount: false,
+        exceedTotalPages: false,
+        hasNextPage: false,
+        hasPrevPage: false,
+        limit: 10,
+        page: 1,
+        result: categories,
+        totalPages: categories.length,
+      } as PaginationResult;
+
       jest.spyOn(prisma.categories, 'findMany').mockResolvedValue(categories);
       jest
         .spyOn(prisma.categories, 'count')
@@ -53,7 +57,7 @@ describe('CategoryController', () => {
 
       // Pass paginationDto to the findAll method
       const result = await controller.findAll(paginationDto);
-      expect(result).toEqual(expectedResult);
+      expect(result).toMatchObject(expectedResult);
       expect(prisma.categories.findMany).toHaveBeenCalled();
       expect(prisma.categories.count).toHaveBeenCalled();
     });

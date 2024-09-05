@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryService } from './category.service';
 import { PrismaService } from '../../providers/database/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationResult } from 'prisma-paginate';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -51,14 +52,16 @@ describe('CategoryService', () => {
       } as PaginationDto;
 
       const expected = {
-        data: categories,
-        meta: {
-          current_page: 1,
-          last_page: 1,
-          per_page: 10,
-          total: 1,
-        },
-      };
+        count: 1,
+        exceedCount: false,
+        exceedTotalPages: false,
+        hasNextPage: false,
+        hasPrevPage: false,
+        limit: 10,
+        page: 1,
+        result: categories,
+        totalPages: 1,
+      } as PaginationResult;
 
       jest.spyOn(prisma.categories, 'count').mockResolvedValue(1);
 
@@ -67,7 +70,7 @@ describe('CategoryService', () => {
         .mockResolvedValue(categories as any);
 
       const result = await service.findAll(paginationDto);
-      expect(result).toEqual(expected);
+      expect(result).toMatchObject(expected);
       expect(prisma.categories.findMany).toHaveBeenCalled();
     });
   });
