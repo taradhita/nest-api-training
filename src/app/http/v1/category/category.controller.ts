@@ -11,6 +11,7 @@ import {
   Query,
   NotFoundException,
   UseInterceptors,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CategoryService } from '../../../../modules/category/category.service';
 import { CreateCategoryDto } from '../../../../modules/category/dto/create-category.dto';
@@ -43,7 +44,7 @@ export class CategoryController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     const category = await this.categoryService.findOne(+id);
     if (!category) {
       throw new NotFoundException('Category not found');
@@ -55,7 +56,7 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     const category = await this.categoryService.findOne(+id);
@@ -67,7 +68,7 @@ export class CategoryController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.remove(+id);
   }
 }

@@ -5,6 +5,7 @@ import { PrismaService } from '../../../../providers/database/prisma/prisma.serv
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { PaginationResult } from 'prisma-paginate';
+import { ParseIntPipe } from '@nestjs/common';
 
 describe('CategoryController', () => {
   let controller: CategoryController;
@@ -12,9 +13,20 @@ describe('CategoryController', () => {
   let prisma: PrismaService;
 
   beforeEach(async () => {
+    const mockParseIntPipe = {
+      transform: jest.fn().mockImplementation((value) => parseInt(value)),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CategoryController],
-      providers: [CategoryService, PrismaService],
+      providers: [
+        CategoryService,
+        PrismaService,
+        {
+          provide: ParseIntPipe,
+          useValue: mockParseIntPipe,
+        },
+      ],
     }).compile();
 
     controller = module.get<CategoryController>(CategoryController);
@@ -79,11 +91,11 @@ describe('CategoryController', () => {
 
   describe('findOne', () => {
     it('should return a category', async () => {
-      const id: number = 1;
+      const id = 1;
       const category = { id: 1, name: 'Test Category' };
 
       jest.spyOn(prisma.categories, 'findFirst').mockResolvedValue(category);
-      const result = await controller.findOne(id.toString());
+      const result = await controller.findOne(id);
       expect(result).toEqual(category);
       expect(prisma.categories.findFirst).toHaveBeenCalled();
     });
@@ -93,7 +105,7 @@ describe('CategoryController', () => {
 
       jest.spyOn(prisma.categories, 'findFirst').mockResolvedValue(null);
 
-      await expect(controller.findOne(id.toString())).rejects.toThrow(
+      await expect(controller.findOne(id)).rejects.toThrow(
         new NotFoundException('Category not found'),
       );
       expect(prisma.categories.findFirst).toHaveBeenCalled();
@@ -114,7 +126,7 @@ describe('CategoryController', () => {
       jest.spyOn(service, 'update').mockResolvedValue(updatedCategory);
 
       // Call the controller method
-      const result = await controller.update(id.toString(), updateCategoryDto);
+      const result = await controller.update(id, updateCategoryDto);
 
       // Verify the result and that methods were called
       expect(result).toEqual(updatedCategory);
@@ -135,9 +147,9 @@ describe('CategoryController', () => {
         .mockRejectedValue(new NotFoundException('Category not found'));
 
       // Call the controller method and expect an exception to be thrown
-      await expect(
-        controller.update(id.toString(), updateCategoryDto),
-      ).rejects.toThrow(new NotFoundException('Category not found'));
+      await expect(controller.update(id, updateCategoryDto)).rejects.toThrow(
+        new NotFoundException('Category not found'),
+      );
 
       // Verify that findOne was called and update was not called
       expect(service.findOne).toHaveBeenCalledWith(id);
@@ -153,7 +165,7 @@ describe('CategoryController', () => {
         .spyOn(prisma.categories, 'delete')
         .mockResolvedValue({ id: 1, name: 'Test Category' });
 
-      await controller.remove(id.toString());
+      await controller.remove(id);
       expect(prisma.categories.delete).toHaveBeenCalled();
     });
   });
