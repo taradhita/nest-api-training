@@ -5,11 +5,12 @@ import { PrismaService } from '../../providers/database/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PAGINATION_DEFAULTS } from '../../common/constants';
 import { PaginationResult } from 'prisma-paginate';
+import { Categories } from '@prisma/client';
 
 @Injectable()
 export class CategoryService {
   constructor(private prisma: PrismaService) {}
-  async create(createCategoryDto: CreateCategoryDto) {
+  async create(createCategoryDto: CreateCategoryDto): Promise<Categories> {
     const category = await this.prisma.categories.create({
       data: createCategoryDto,
     });
@@ -29,13 +30,14 @@ export class CategoryService {
     return categories;
   }
 
-  async findOne(id: number) {
-    const category = await this.prisma.categories.findFirst({ where: { id } });
-
-    return category;
+  async findOne(id: number): Promise<Categories> {
+    return this.prisma.categories.findFirst({ where: { id } });
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+  async update(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<Categories> {
     const category = await this.prisma.categories.update({
       where: { id },
       data: updateCategoryDto,
@@ -44,7 +46,7 @@ export class CategoryService {
     return category;
   }
 
-  remove(id: number) {
+  async remove(id: number): Promise<Categories> {
     return this.prisma.categories.delete({ where: { id } });
   }
 }

@@ -19,6 +19,8 @@ import { UpdateCategoryDto } from '../../../../modules/category/dto/update-categ
 import { PaginationDto } from '../../../../common/dto/pagination.dto';
 import { TransformInterceptor } from '../../../../common/interceptors/transform.interceptor';
 import { PaginateInterceptor } from '../../../../common/interceptors/paginate.interceptor';
+import { Categories } from '@prisma/client';
+import { PaginationResult } from 'prisma-paginate/dist/pagination/result/PaginationResult';
 
 @Controller({
   path: 'categories',
@@ -30,21 +32,21 @@ export class CategoryController {
   @Post()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
-  create(@Body() createCategoryDto: CreateCategoryDto) {
+  create(@Body() createCategoryDto: CreateCategoryDto): Promise<Categories> {
     return this.categoryService.create(createCategoryDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(PaginateInterceptor)
-  findAll(@Query() paginationDto?: PaginationDto) {
+  findAll(@Query() paginationDto?: PaginationDto): Promise<PaginationResult> {
     return this.categoryService.findAll(paginationDto);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
-  async findOne(@Param('id', ParseIntPipe) id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Categories> {
     const category = await this.categoryService.findOne(+id);
     if (!category) {
       throw new NotFoundException('Category not found');
@@ -58,7 +60,7 @@ export class CategoryController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
-  ) {
+  ): Promise<Categories> {
     const category = await this.categoryService.findOne(+id);
     if (!category) {
       throw new NotFoundException('Category not found');
@@ -68,7 +70,7 @@ export class CategoryController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<Categories> {
     return this.categoryService.remove(+id);
   }
 }
