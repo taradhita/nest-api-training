@@ -13,12 +13,12 @@ import {
   UseInterceptors,
   ParseIntPipe,
 } from '@nestjs/common';
-import { CategoryService } from '../../../../modules/category/category.service';
-import { CreateCategoryDto } from '../../../../modules/category/dto/create-category.dto';
-import { UpdateCategoryDto } from '../../../../modules/category/dto/update-category.dto';
-import { PaginationDto } from '../../../../common/dto/pagination.dto';
-import { TransformInterceptor } from '../../../../common/interceptors/transform.interceptor';
-import { PaginateInterceptor } from '../../../../common/interceptors/paginate.interceptor';
+import { CategoryService } from '@/modules/category/category.service';
+import { CreateCategoryDto } from '@/modules/category/dto/create-category.dto';
+import { UpdateCategoryDto } from '@/modules/category/dto/update-category.dto';
+import { PaginationDto } from '@/common/dto/pagination.dto';
+import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
+import { PaginateInterceptor } from '@/common/interceptors/paginate.interceptor';
 import { Categories } from '@prisma/client';
 import { PaginationResult } from 'prisma-paginate/dist/pagination/result/PaginationResult';
 

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryController } from './category.controller';
-import { CategoryService } from '../../../../modules/category/category.service';
-import { PrismaService } from '../../../../providers/database/prisma/prisma.service';
+import { CategoryService } from '@/modules/category/category.service';
+import { PrismaService } from '@/providers/database/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { PaginationResult } from 'prisma-paginate';

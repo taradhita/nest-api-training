@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
-import { RegisterDTO } from '../../../../modules/auth/dto/register-dto';
-import { AuthService } from '../../../../modules/auth/auth.service';
-import { UserModule } from '../../../../modules/user/user.module';
+import { RegisterDTO } from '@/modules/auth/dto/register-dto';
+import { AuthService } from '@/modules/auth/auth.service';
+import { UserModule } from '@/modules/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UnprocessableEntityException } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';

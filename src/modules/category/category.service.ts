@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { PrismaService } from '../../providers/database/prisma/prisma.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { PAGINATION_DEFAULTS } from '../../common/constants';
+import { PrismaService } from '@/providers/database/prisma/prisma.service';
+import { PaginationDto } from '@/common/dto/pagination.dto';
+import { PAGINATION_DEFAULTS } from '@/common/constants';
 import { PaginationResult } from 'prisma-paginate';
 import { Categories } from '@prisma/client';
 

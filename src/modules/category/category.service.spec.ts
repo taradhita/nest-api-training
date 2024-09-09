@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryService } from './category.service';
-import { PrismaService } from '../../providers/database/prisma/prisma.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PrismaService } from '@/providers/database/prisma/prisma.service';
+import { PaginationDto } from '@/common/dto/pagination.dto';
 import { PaginationResult } from 'prisma-paginate';
 
 describe('CategoryService', () => {
