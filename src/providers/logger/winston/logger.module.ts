@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 @Module({
   imports: [
@@ -16,9 +17,17 @@ import { format, transports } from 'winston';
           filename: 'logs/error.log',
           level: 'error',
         }),
-        new transports.File({
-          filename: 'logs/info.log',
+        new DailyRotateFile({
+          filename: 'logs/info-%DATE%.log',
           level: 'info',
+          datePattern: 'YYYY-MM-DD',
+          maxFiles: '14d',
+          format: format.combine(
+            format.timestamp(),
+            format.printf(
+              (info) => `${info.timestamp} [${info.level}]: ${info.message}`,
+            ),
+          ),
         }),
         new transports.File({
           filename: 'logs/debug.log',
