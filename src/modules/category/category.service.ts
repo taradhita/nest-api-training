@@ -6,7 +6,6 @@ import { PaginationDto } from '@/common/dto/pagination.dto';
 import { PaginationResult } from 'prisma-paginate';
 import { Categories } from '@prisma/client';
 import { getPagination } from '@/common/utils/shared.utils';
-// import { getPagination } from '@/common/utils/shared.utils';
 
 @Injectable()
 export class CategoryService {
@@ -19,13 +18,21 @@ export class CategoryService {
     return category;
   }
 
-  async findAll(paginationDto?: PaginationDto): Promise<PaginationResult> {
+  async findAll(
+    paginationDto?: PaginationDto,
+    name?: string,
+  ): Promise<PaginationResult> {
     const { page, limit } = getPagination(paginationDto);
 
-    const categories = await this.prisma.categories.paginate({
-      page,
-      limit,
-    });
+    const categories = await this.prisma.categories.paginate(
+      {
+        where: { name: { contains: name } },
+      },
+      {
+        page,
+        limit,
+      },
+    );
 
     return categories;
   }

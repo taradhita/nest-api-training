@@ -39,8 +39,11 @@ export class CategoryController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(PaginateInterceptor)
-  findAll(@Query() paginationDto?: PaginationDto): Promise<PaginationResult> {
-    return this.categoryService.findAll(paginationDto);
+  findAll(
+    @Query() paginationDto?: PaginationDto,
+    @Query('name') name?: string,
+  ): Promise<PaginationResult> {
+    return this.categoryService.findAll(paginationDto, name);
   }
 
   @Get(':id')
