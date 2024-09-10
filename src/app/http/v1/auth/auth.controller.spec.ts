@@ -7,11 +7,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { UnprocessableEntityException } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { PrismaService } from '@/providers/database/prisma/prisma.service';
+import { PrismaModule } from '@/providers/database/prisma/prisma.module';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let service: AuthService;
   let logger: Logger;
+  let prismaService: PrismaService;
 
   const mockAuthService = {
     register: jest.fn().mockResolvedValue({
@@ -34,6 +37,14 @@ describe('AuthController', () => {
     }),
   };
 
+  const mockPrismaService = {
+    user: {
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      // Add other methods as needed
+    },
+  };
+
   beforeEach(async () => {
     const mockLogger = {
       info: jest.fn(),
@@ -54,6 +65,10 @@ describe('AuthController', () => {
           provide: WINSTON_MODULE_PROVIDER, // Inject the Winston logger
           useValue: mockLogger, // Use the mock logger
         },
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
+        },
       ],
       imports: [
         UserModule,
@@ -61,12 +76,14 @@ describe('AuthController', () => {
           secret: 'secret',
           signOptions: { expiresIn: '1d' },
         }),
+        PrismaModule,
       ],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
     service = module.get<AuthService>(AuthService);
     logger = module.get<Logger>(WINSTON_MODULE_PROVIDER);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
