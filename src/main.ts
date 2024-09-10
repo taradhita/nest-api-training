@@ -11,7 +11,12 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
   app.setGlobalPrefix('api/');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // Enable transformation of query parameters
+      whitelist: true, // Strips out properties that are not defined in the DTO
+    }),
+  );
   await app.listen(config.get('app.http.port'));
 }
 bootstrap();

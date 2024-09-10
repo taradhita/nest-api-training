@@ -3,9 +3,10 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PrismaService } from '@/providers/database/prisma/prisma.service';
 import { PaginationDto } from '@/common/dto/pagination.dto';
-import { PAGINATION_DEFAULTS } from '@/common/constants';
 import { PaginationResult } from 'prisma-paginate';
 import { Categories } from '@prisma/client';
+import { getPagination } from '@/common/utils/shared.utils';
+// import { getPagination } from '@/common/utils/shared.utils';
 
 @Injectable()
 export class CategoryService {
@@ -19,12 +20,11 @@ export class CategoryService {
   }
 
   async findAll(paginationDto?: PaginationDto): Promise<PaginationResult> {
-    const page = paginationDto.page || PAGINATION_DEFAULTS.PAGE;
-    const limit = paginationDto.limit || PAGINATION_DEFAULTS.LIMIT;
+    const { page, limit } = getPagination(paginationDto);
 
     const categories = await this.prisma.categories.paginate({
-      limit,
       page,
+      limit,
     });
 
     return categories;
