@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../../providers/database/prisma/prisma.service';
+import { PrismaService } from '@/providers/database/prisma/prisma.service';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -18,6 +18,8 @@ describe('UserService', () => {
 
   afterEach(async () => {
     jest.clearAllMocks();
+
+    await prismaService.users.deleteMany({});
   });
 
   it('should be defined', () => {
@@ -66,7 +68,7 @@ describe('UserService', () => {
         name: 'User',
         email: 'user@example.com',
         password: 'password',
-      } as Prisma.usersCreateInput;
+      } as Prisma.UsersCreateInput;
       const createSpy = jest.spyOn(prismaService.users, 'create');
 
       await userService.createUser(userData);

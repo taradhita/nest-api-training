@@ -6,9 +6,9 @@ import {
   Post,
   Inject,
 } from '@nestjs/common';
-import { AuthService } from '../../../../modules/auth/auth.service';
-import { LoginDTO } from '../../../../modules/auth/dto/login-dto';
-import { RegisterDTO } from '../../../../modules/auth/dto/register-dto';
+import { AuthService } from '@/modules/auth/auth.service';
+import { LoginDTO } from '@/modules/auth/dto/login-dto';
+import { RegisterDTO } from '@/modules/auth/dto/register-dto';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 
