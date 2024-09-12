@@ -20,6 +20,15 @@ model Users {
 model Categories {
   id       Int    @id @default(autoincrement())
   name     String @db.VarChar
+  products Products[]
 
   @@map("categories")
+}
+
+model Products {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar
+  categories Categories[]
+
+  @@map("products")
 }
