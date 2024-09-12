@@ -21,6 +21,8 @@ import { TransformInterceptor } from '@/common/interceptors/transform.intercepto
 import { PaginateInterceptor } from '@/common/interceptors/paginate.interceptor';
 import { Categories } from '@prisma/client';
 import { PaginationResult } from 'prisma-paginate/dist/pagination/result/PaginationResult';
+import { CategoryGetAllRequest } from '@/modules/category/interfaces/category-get-all-request.interface';
+import { QueryPagination } from '@/common/decorators/query-pagination.decorator';
 
 @Controller({
   path: 'categories',
@@ -40,10 +42,10 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(PaginateInterceptor)
   findAll(
-    @Query() paginationDto?: PaginationDto,
-    @Query('name') name?: string,
+    @QueryPagination() { page, limit }: PaginationDto,
+    @Query() request: CategoryGetAllRequest,
   ): Promise<PaginationResult> {
-    return this.categoryService.findAll(paginationDto, name);
+    return this.categoryService.findAll({ page, limit }, request.name);
   }
 
   @Get(':id')

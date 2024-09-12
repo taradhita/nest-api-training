@@ -6,6 +6,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { PaginationResult } from 'prisma-paginate';
 import { ParseIntPipe } from '@nestjs/common';
+import { CategoryGetAllRequest } from '@/modules/category/interfaces/category-get-all-request.interface';
 
 describe('CategoryController', () => {
   let controller: CategoryController;
@@ -50,6 +51,8 @@ describe('CategoryController', () => {
         limit: 10,
       } as PaginationDto;
 
+      const request = { name: 'Test Category' } as CategoryGetAllRequest;
+
       const expectedResult = {
         count: 1,
         exceedCount: false,
@@ -68,7 +71,7 @@ describe('CategoryController', () => {
         .mockResolvedValue(categories.length);
 
       // Pass paginationDto to the findAll method
-      const result = await controller.findAll(paginationDto);
+      const result = await controller.findAll(paginationDto, request);
       expect(result).toMatchObject(expectedResult);
       expect(prisma.categories.findMany).toHaveBeenCalled();
       expect(prisma.categories.count).toHaveBeenCalled();
