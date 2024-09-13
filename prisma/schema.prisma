@@ -26,8 +26,10 @@ model Categories {
 }
 
 model Products {
-  id       Int    @id @default(autoincrement())
-  name     String @db.VarChar
+  id          Int    @id @default(autoincrement())
+  name        String @db.VarChar
+  description String 
+  price       Int
   categories Categories[]
 
   @@map("products")
