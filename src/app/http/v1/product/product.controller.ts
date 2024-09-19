@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   HttpCode,
   UseInterceptors,
   HttpStatus,
@@ -14,8 +13,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ProductService } from '@/modules/product/product.service';
-import { CreateProductDto } from '@/modules/product/dto/create-product.dto';
-import { UpdateProductDto } from '@/modules/product/dto/update-product.dto';
+import { ProductDto } from '@/modules/product/dto/product.dto';
 import { QueryPagination } from '@/common/decorators/query-pagination.decorator';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
@@ -33,8 +31,8 @@ export class ProductController {
   @Post()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
-  async create(@Body() createProductDto: CreateProductDto): Promise<Products> {
-    return this.productService.create(createProductDto);
+  async create(@Body() productDto: ProductDto): Promise<Products> {
+    return this.productService.create(productDto);
   }
 
   @Get()
@@ -50,7 +48,7 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Products> {
-    const product = await this.productService.findOne(+id);
+    const product = await this.productService.findOne(id);
 
     if (!product) {
       throw new NotFoundException('Product not found');
@@ -64,9 +62,9 @@ export class ProductController {
   @UseInterceptors(TransformInterceptor)
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body() productDto: ProductDto,
   ) {
-    const product = await this.productService.update(+id, updateProductDto);
+    const product = await this.productService.update(id, productDto);
 
     if (!product) {
       throw new NotFoundException('Product not found');
@@ -78,7 +76,7 @@ export class ProductController {
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id', ParseIntPipe) id: number) {
-    const deletedProduct = this.productService.remove(+id);
+    const deletedProduct = this.productService.remove(id);
 
     if (!deletedProduct) {
       throw new NotFoundException('Product not found');

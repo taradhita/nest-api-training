@@ -1,5 +1,5 @@
 import { IsInt, IsNotEmpty, Min } from 'class-validator';
-export class CreateProductDto {
+export class ProductDto {
   @IsNotEmpty()
   name: string;
 

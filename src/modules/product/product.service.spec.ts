@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { ProductDto } from './dto/product.dto';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { PrismaService } from '@/providers/database/prisma/prisma.service';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationResult } from 'prisma-paginate';
 
 describe('ProductService', () => {
@@ -53,7 +52,7 @@ describe('ProductService', () => {
         price: 10,
         description: 'Test Description',
         categories: [1, 2],
-      } as CreateProductDto;
+      } as ProductDto;
 
       const createdProduct = {
         id: 1,
@@ -131,7 +130,7 @@ describe('ProductService', () => {
         price: 10,
         description: 'Test Description',
         categories: [1, 2],
-      } as UpdateProductDto;
+      } as ProductDto;
 
       const categories = [
         {
@@ -169,7 +168,7 @@ describe('ProductService', () => {
         price: 100,
         description: 'Test Description',
         categories: [1],
-      } as UpdateProductDto;
+      } as ProductDto;
 
       const categories = [
         {

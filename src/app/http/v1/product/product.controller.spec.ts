@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductController } from './product.controller';
 import { ProductService } from '@/modules/product/product.service';
 import { PrismaService } from '@/providers/database/prisma/prisma.service';
-import { CreateProductDto } from '@/modules/product/dto/create-product.dto';
+import { ProductDto } from '@/modules/product/dto/product.dto';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { PaginationResult } from 'prisma-paginate';
 import { NotFoundException } from '@nestjs/common';
@@ -57,7 +57,7 @@ describe('ProductController', () => {
         price: 10,
         description: 'Test Description',
         categories: [1, 2],
-      } as CreateProductDto;
+      } as ProductDto;
       const createdProduct = {
         id: 1,
         name: createProductDto.name,
@@ -156,7 +156,7 @@ describe('ProductController', () => {
         name: 'Updated Product',
         price: 20,
         description: 'Updated Description',
-      };
+      } as ProductDto;
       const updatedProduct = {
         id: 1,
         name: updateProductDto.name,
