@@ -14,8 +14,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { CategoryService } from '@/modules/category/category.service';
-import { CreateCategoryDto } from '@/modules/category/dto/create-category.dto';
-import { UpdateCategoryDto } from '@/modules/category/dto/update-category.dto';
+import { CategoryDto } from '@/modules/category/dto/category.dto';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 import { PaginateInterceptor } from '@/common/interceptors/paginate.interceptor';
@@ -34,8 +33,8 @@ export class CategoryController {
   @Post()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
-  create(@Body() createCategoryDto: CreateCategoryDto): Promise<Categories> {
-    return this.categoryService.create(createCategoryDto);
+  create(@Body() categoryDto: CategoryDto): Promise<Categories> {
+    return this.categoryService.create(categoryDto);
   }
 
   @Get()
@@ -52,7 +51,7 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(TransformInterceptor)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Categories> {
-    const category = await this.categoryService.findOne(+id);
+    const category = await this.categoryService.findOne(id);
     if (!category) {
       throw new NotFoundException('Category not found');
     }
@@ -64,18 +63,18 @@ export class CategoryController {
   @UseInterceptors(TransformInterceptor)
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Body() categoryDto: CategoryDto,
   ): Promise<Categories> {
-    const category = await this.categoryService.findOne(+id);
+    const category = await this.categoryService.findOne(id);
     if (!category) {
       throw new NotFoundException('Category not found');
     }
-    return this.categoryService.update(+id, updateCategoryDto);
+    return this.categoryService.update(id, categoryDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<Categories> {
-    return this.categoryService.remove(+id);
+    return this.categoryService.remove(id);
   }
 }

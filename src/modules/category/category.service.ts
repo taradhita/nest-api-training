@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryDto } from './dto/category.dto';
 import { PrismaService } from '@/providers/database/prisma/prisma.service';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { PaginationResult } from 'prisma-paginate';
@@ -10,9 +9,9 @@ import { getPagination } from '@/common/utils/shared.utils';
 @Injectable()
 export class CategoryService {
   constructor(private prisma: PrismaService) {}
-  async create(createCategoryDto: CreateCategoryDto): Promise<Categories> {
+  async create(categoryDto: CategoryDto): Promise<Categories> {
     const category = await this.prisma.categories.create({
-      data: createCategoryDto,
+      data: categoryDto,
     });
 
     return category;
@@ -41,13 +40,10 @@ export class CategoryService {
     return this.prisma.categories.findFirst({ where: { id } });
   }
 
-  async update(
-    id: number,
-    updateCategoryDto: UpdateCategoryDto,
-  ): Promise<Categories> {
+  async update(id: number, categoryDto: CategoryDto): Promise<Categories> {
     const category = await this.prisma.categories.update({
       where: { id },
-      data: updateCategoryDto,
+      data: categoryDto,
     });
 
     return category;
