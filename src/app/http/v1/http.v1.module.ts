@@ -7,10 +7,17 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from '../exceptions/http.exception';
 import { ProductModule } from '@/modules/product/product.module';
 import { ProductController } from './product/product.controller';
+import { TransactionModule } from '@/modules/transaction/transaction.module';
+import { TransactionController } from './transaction/transaction.controller';
 
 @Module({
-  imports: [AuthModule, CategoryModule, ProductModule],
-  controllers: [AuthController, CategoryController, ProductController],
+  imports: [AuthModule, CategoryModule, ProductModule, TransactionModule],
+  controllers: [
+    AuthController,
+    CategoryController,
+    ProductController,
+    TransactionController,
+  ],
   providers: [
     {
       provide: APP_FILTER,
