@@ -13,6 +13,7 @@ model Users {
   name     String @db.VarChar
   email    String @db.VarChar @unique
   password String @db.VarChar
+  transactions Transactions[]
 
   @@map("users")
 }
@@ -31,6 +32,36 @@ model Products {
   description String 
   price       Int
   categories Categories[]
+  transactions TransactionDetails[]
 
   @@map("products")
+}
+
+model Transactions {
+  id        Int @id @default(autoincrement())
+  transaction_number String
+  total_price Int
+  payment_status PaymentStatus @default(waiting_payment)
+  user Users @relation(fields: [user_id], references: [id])
+  user_id Int
+  transactionDetails TransactionDetails[]
+
+  @@map("transactions")
+}
+
+model TransactionDetails {
+  id Int @id @default(autoincrement())
+  price Int
+  quantity Int
+  transaction Transactions @relation(fields: [transaction_id], references: [id])
+  transaction_id Int
+  product Products @relation(fields: [product_id], references: [id])
+  product_id Int
+
+  @@map("transaction_details")
+}
+
+enum PaymentStatus {
+  waiting_payment
+  paid
 }
