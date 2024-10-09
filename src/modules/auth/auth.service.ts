@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { Prisma } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { PayloadType } from './types/payload.type';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +50,7 @@ export class AuthService {
       });
     }
 
-    const payload = {
+    const payload: PayloadType = {
       sub: user.id,
       email: user.email,
     };
