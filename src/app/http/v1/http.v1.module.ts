@@ -9,9 +9,16 @@ import { ProductModule } from '@/modules/product/product.module';
 import { ProductController } from './product/product.controller';
 import { TransactionModule } from '@/modules/transaction/transaction.module';
 import { TransactionController } from './transaction/transaction.controller';
+import { UserModule } from '@/modules/user/user.module';
 
 @Module({
-  imports: [AuthModule, CategoryModule, ProductModule, TransactionModule],
+  imports: [
+    AuthModule,
+    CategoryModule,
+    ProductModule,
+    TransactionModule,
+    UserModule,
+  ],
   controllers: [
     AuthController,
     CategoryController,
